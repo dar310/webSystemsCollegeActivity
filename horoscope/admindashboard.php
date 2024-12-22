@@ -2,6 +2,12 @@
 // Create database connection using config file
 include_once("config.php");
 
+function shortenText($text, $maxLength = 35) {
+    if (strlen($text) > $maxLength) {
+        return substr($text, 0, $maxLength) . '...';
+    }
+    return $text;
+}
 function convertNumtoMonth($month){
     switch($month){
         case 1: $month="January"; break;
@@ -32,7 +38,7 @@ $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac AS
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrator Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles/admindash.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-beige">
@@ -49,32 +55,34 @@ $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac AS
                         <h2 class="h5">Users</h2>
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Lastname</th>
-                                    <th>Firstname</th>
-                                    <th>Birthday</th>
-                                    <th>Gender</th>
-                                    <th>Operations</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php  
-                                    while($user_data = mysqli_fetch_array($result)) {
-                                        echo "<tr>";
-                                        echo "<td>".$user_data['username']."</td>";
-                                        echo "<td>".$user_data['last_name']."</td>";
-                                        echo "<td>".$user_data['first_name']."</td>";
-                                        echo "<td>".convertNumtoMonth($user_data['month'])." ".$user_data['day'].", ".$user_data['year']."</td>";    
-                                        echo "<td>".ucfirst($user_data['gender'])."</td>";    
-                                        echo "<td><a href='edit-user.php?id=$user_data[id]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-user.php?id=$user_data[id]' class='btn btn-danger btn-sm'>Delete</a></td>";
-                                        echo "</tr>";
-                                    }
-                                ?>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Lastname</th>
+                                        <th>Firstname</th>
+                                        <th>Birthday</th>
+                                        <th>Gender</th>
+                                        <th>Operations</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php  
+                                        while($user_data = mysqli_fetch_array($result)) {
+                                            echo "<tr>";
+                                            echo "<td>".$user_data['username']."</td>";
+                                            echo "<td>".$user_data['last_name']."</td>";
+                                            echo "<td>".$user_data['first_name']."</td>";
+                                            echo "<td>".convertNumtoMonth($user_data['month'])." ".$user_data['day'].", ".$user_data['year']."</td>";    
+                                            echo "<td>".ucfirst($user_data['gender'])."</td>";    
+                                            echo "<td><a href='edit-user.php?id=$user_data[id]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-user.php?id=$user_data[id]' class='btn btn-danger btn-sm'>Delete</a></td>";
+                                            echo "</tr>";
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
                         <a href="add-users.php" class="btn btn-success btn-block">Add New User</a>
                     </div>
                 </div>
@@ -87,32 +95,34 @@ $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac AS
                         <h2 class="h5">Zodiac Signs</h2>
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Zodiac Sign</th>
-                                    <th>Description</th>
-                                    <th>Daily Horoscope</th>
-                                    <th>Month Range</th>
-                                    <th>Image</th>
-                                    <th>Operations</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php  
-                                    while($zodiac_data = mysqli_fetch_array($zodiac_result)) {
-                                        echo "<tr>";
-                                        echo "<td>".$zodiac_data['sign_name']."</td>";
-                                        echo "<td>".$zodiac_data['description']."</td>";
-                                        echo "<td>".$zodiac_data['daily_horoscope']."</td>";
-                                        echo "<td>".convertNumtoMonth($zodiac_data['month_min'])." ".$zodiac_data['day_min']." - ".convertNumtoMonth($zodiac_data['month_max'])." ".$zodiac_data['day_max']."</td>";    
-                                        echo "<td>".$zodiac_data['image_path']."</td>";    
-                                        echo "<td><a href='edit-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-danger btn-sm'>Delete</a></td>";
-                                        echo "</tr>";
-                                    }
-                                ?>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="zodiac-table">
+                                <thead>
+                                    <tr>
+                                        <th>Zodiac Sign</th>
+                                        <th>Description</th>
+                                        <th>Daily Horoscope</th>
+                                        <th>Month Range</th>
+                                        <th>Image Path</th>
+                                        <th>Operations</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php  
+                                        while($zodiac_data = mysqli_fetch_array($zodiac_result)) {
+                                            echo "<tr>";
+                                            echo "<td>".$zodiac_data['sign_name']."</td>";
+                                            echo "<td>".shortenText($zodiac_data['description'])."</td>";
+                                            echo "<td>".$zodiac_data['daily_horoscope']."</td>";
+                                            echo "<td>".convertNumtoMonth($zodiac_data['month_min'])." ".$zodiac_data['day_min']." - ".convertNumtoMonth($zodiac_data['month_max'])." ".$zodiac_data['day_max']."</td>";    
+                                            echo "<td>".$zodiac_data['image_path']."</td>";    
+                                            echo "<td><a href='edit-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-danger btn-sm'>Delete</a></td>";
+                                            echo "</tr>";
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
                         <a href="add-zodiac.php" class="btn btn-success btn-block">Add New Zodiac</a>
                     </div>
                 </div>

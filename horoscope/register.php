@@ -38,7 +38,7 @@ mysqli_close($conn);
         <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
             <div class="mb-3">
                 <label for="firstname" class="form-label">First Name</label>
-                <input type="text" id="firstname" class="form-control" name="firstname" required>
+                <input type="text" id="firstname" class="form-control" name="firstname" required >
             </div>
             <div class="mb-3">
                 <label for="lastname" class="form-label">Last Name</label>

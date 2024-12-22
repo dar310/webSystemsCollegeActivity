@@ -103,7 +103,7 @@ while($user_data = mysqli_fetch_array($result))
                         <td><textarea name="daily_horoscope" class="form-control"><?php echo $daily_horoscope;?></textarea></td>
                     </tr>
                     <tr> 
-                        <td><label for="min_month" class="form-label">First Range Month</label></td>
+                        <td><label for="min_month" class="form-label">Starting Month</label></td>
                         <td>
                             <select class="form-select" aria-label="Default select example" name="min_month">
                                 <?php echo generateMonthOptions($min_month); ?>
@@ -113,7 +113,7 @@ while($user_data = mysqli_fetch_array($result))
                         </td>
                     </tr>
                     <tr> 
-                        <td><label for="max_month" class="form-label">Last Range Month</label></td>
+                        <td><label for="max_month" class="form-label">End Month</label></td>
                         <td><select class="form-select" aria-label="Default select example" name="max_month">
                                 <?php echo generateMonthOptions($max_month); ?>
                             </select>

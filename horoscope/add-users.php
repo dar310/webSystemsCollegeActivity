@@ -1,3 +1,38 @@
+<?php
+
+    include_once("config.php");
+	// Check If form submitted, insert form data into users table.
+	if(isset($_POST['Submit'])) {
+        $username = trim($_POST["username"]);
+        $password = $_POST['password'];
+        $first_name = $_POST["firstname"];
+        $last_name = $_POST["lastname"];
+        $birthday = $_POST["birthday"];
+        $gender = $_POST["gender"];
+        $is_admin = isset($_POST["admin"]) && $_POST["admin"] == '1' ? 1 : 0;
+        
+		if (empty($username) || empty($password) || empty($first_name) || empty($last_name) || empty($birthday) || empty($gender)) {
+            echo '<script>alert("Please fill out all required fields.")</script>';
+            exit;
+        }
+        $password = password_hash($password, PASSWORD_DEFAULT);
+		// include database connection file
+				
+		// Insert user data into table
+        $stmt = $conn->prepare("INSERT INTO users (username, first_name, last_name, password, birthday, gender, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssi", $username, $first_name, $last_name, $password, $birthday, $gender, $is_admin);
+    
+        if ($stmt->execute()) {
+            echo '<script>alert("User Successfully added")</script>';
+        } else {
+            echo '<script>alert("Failed to add user. Please try again.")</script>';
+        }
+    
+		// echo '<script>alert("User Successfully added")</script>';
+        $stmt->close();
+        $conn->close();	
+	}
+?>
 <html>
 <head>
 	<title>Add Users</title>
@@ -10,7 +45,7 @@
 <body>
     <h1>Add Users</h1>
     <!-- Starting here -->
-    <form action="add-users.php" method="post" name="form1">
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post" name="form1">
         <table width="100%" border="0" class="table">
             <tr> 
                 <td><label for="username" class="form-label">Username</label></td>
@@ -64,30 +99,8 @@
                 </td>
             </tr>
             </table>
-            <td><button type="submit" name="submit" class="btn btn-primary" value="submit">Add User</button></td>
+            <td><button type="submit" name="Submit" class="btn btn-primary" value="Submit">Add User</button></td>
         </form>
-	
-	<?php
-
-	// Check If form submitted, insert form data into users table.
-	if(isset($_POST['Submit'])) {
-        $username = $_POST['username'];
-        $password = password_hash($_POST["password"],PASSWORD_DEFAULT);
-        $first_name = $_POST['first_name'];
-		$last_name = $_POST['last_name'];
-		$birthday = $_POST['birthday'];
-		$gender = $_POST['gender'];
-		$is_admin = !empty($_POST['admin']) ? 1 : 0;
-		
-		// include database connection file
-		include_once("config.php");
-				
-		// Insert user data into table
-		$result = mysqli_query($conn, "INSERT INTO users (username, first_name, last_name, password, birthday,gender, is_admin) VALUES ('$username','$firstname','$lastname','$password','$birthday','$gender','$is_admin')");
-		
-		// Show message when user added
-		echo '<script>alert("User Successfully added")</script><a href="admindashboard.php"><button class="btn btn-primary">Go Back</button></a>';
-	}
-	?>
+        <br><br><a href="admindashboard.php"><button class="btn btn-primary">Go Back</button></a>
 </body>
 </html>

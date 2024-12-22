@@ -40,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header('Location: admindashboard.php');
             } else {
                 $_SESSION['username'] = $username;
+                $_SESSION['birth_month'] = $row["month"];
+                $_SESSION['birth_day'] = $row["day"];
                 header('Location: dashboard.php');
             }
         } else {
