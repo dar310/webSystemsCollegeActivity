@@ -1,0 +1,68 @@
+
+body.bg-beige {
+    background-color: #d5dd9b; /* Beige color */
+}
+
+/* Ensure the content boxes (users, zodiac) have a white background */
+.container.bg-white {
+    background-color: #ffffff; /* White background for content area */
+    padding: 30px;
+    border-radius: 10px;
+}
+
+/* Style for the card headers */
+.card-header.text-black {
+    background-color: #e1e1e1; /* Light gray background for headers */
+    color: #000000; /* Black text */
+}
+
+/* Style for the card body */
+.card-body {
+    padding: 20px;
+}
+
+/* Table styling */
+.table {
+    margin-top: 20px;
+}
+
+/* Table header styling */
+.table thead {
+    background-color: #f1f1f1;
+}
+
+.table th, .table td {
+    text-align: center;
+}
+
+/* Button styling */
+.btn-block {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Button styles for primary and secondary buttons */
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-success:hover, .btn-warning:hover, .btn-danger:hover {
+    opacity: 0.8;
+}
+
+/* Footer styling */
+footer {
+    margin-top: 30px;
+}
