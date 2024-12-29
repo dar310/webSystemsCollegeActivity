@@ -111,5 +111,28 @@
         <br>
         <a href="admindashboard.php"><button class="btn btn-secondary">Go Back</button></a>
     </div>
+    <?php
+
+	// Check If form submitted, insert form data into users table.
+	if(isset($_POST['Submit'])) {
+        $sign_name = $_POST['sign_name'];
+        $description = $_POST['description'];
+        $daily_horoscope = $_POST['daily_horoscope'];
+		$min_month = $_POST['min_month'];
+		$min_day = $_POST['min_day'];
+		$max_month = $_POST['max_month'];
+		$max_day = $_POST['max_day'];
+		$image_path = $_POST['image_path'];
+		
+		// include database connection file
+		include_once("config.php");
+				
+		// Insert user data into table
+		$result = mysqli_query($conn, "INSERT INTO zodiac(sign_name, month_min, month_max, day_min, day_max, description, daily_horoscope, image_path) VALUES ('$sign_name','$min_month','$max_month','$min_day','$max_day','$description','$daily_horoscope','$image_path')");
+		
+		// Show message when user added
+		echo '<script>alert("Zodiac Sign Successfully added")</script>';
+	}
+	?>
 </body>
 </html>
