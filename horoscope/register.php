@@ -91,7 +91,7 @@ mysqli_close($conn);
 			</div>
 			<small>Error message</small>
 		</div>
-		<button type="submit">Submit</button>
+		<button type="register now">Register Now</button>
 	</form>
 </div>
 </body>
