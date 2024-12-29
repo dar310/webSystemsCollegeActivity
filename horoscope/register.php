@@ -26,55 +26,73 @@ mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
-    <link rel="stylesheet" href="styles/login.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .gender-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gender-container label {
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
-    <h1>Register</h1>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
-            <div class="mb-3">
-                <label for="firstname" class="form-label">First Name</label>
-                <input type="text" id="firstname" class="form-control" name="firstname" required >
-            </div>
-            <div class="mb-3">
-                <label for="lastname" class="form-label">Last Name</label>
-                <input type="text" id="lastname" class="form-control" name="lastname" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" id="username" class="form-control" name="username" required pattern="^[a-zA-Z0-9-_]*$">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password"class="form-control" name="password" required>
-            </div>
-            <div class="mb-3">
+<div class="wrapper">
+	<div class="header">
+		<h2>Registration Form</h2>
+	</div>
+	<form id="form" class="form">
+		<div class="form-control">
+			<input type="text" placeholder="Enter first name" id="name" />
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="email" placeholder="Enter last name" id="name" />
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="text" placeholder="Enter username" id="username" />
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="password" placeholder="Password" id="password" />
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		  <div class="mb-3">
                 <label for="birthday" class="form-label">Birthday</label>
                 <input type="date" id="birthday" class="form-control" name="birthday" required>
             </div>
-            <!-- Gender Radio Button -->
-            <label class="form-check-label-gender" for="mb-3-gender">Gender:</label>
-            <div class="mb-3-gender">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male-gender" value="male" required>
-                    <label class="form-check-label" for="male-gender">Male</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female-gender" value="female">
-                    <label class="form-check-label" for="female-gender">Female</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="other-gender" value="other">
-                    <label class="form-check-label" for="other-gender">Other</label>
-                </div>
-            </div>
-
-            <button type="submit" name="submit" class="btn btn-primary" value="submit">Register Now</button>
-        </form>
+		<div class="form-control">
+			<label for="gender">Gender:</label>
+			<div class="gender-container">
+				<input type="radio" name="gender" id="male" value="male" />
+				<label for="male">Male</label>
+				<input type="radio" name="gender" id="female" value="female" />
+				<label for="female">Female</label>
+				<input type="radio" name="gender" id="other" value="other" />
+				<label for="other">Other</label>
+			</div>
+			<small>Error message</small>
+		</div>
+		<button type="submit">Submit</button>
+	</form>
+</div>
 </body>
 </html>
