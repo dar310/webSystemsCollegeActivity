@@ -53,10 +53,52 @@ while($user_data = mysqli_fetch_array($result))
             textarea {
                 resize: none;
             }
+	body {
+            font-family: 'Nunito', sans-serif;
+            color: white;
+            background-image: linear-gradient(270deg, #51713A 0%, #000E21 100%);
+        }
+
+        .container {
+            background-color: #202124;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            width: 20%;
+        }
+
+        .form-check-label {
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #7ED6DF;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #6CC5C4;
+        }
         </style>
 	</head>
 
 	<body>
+		<div class="container">
 		<a href="admindashboard.php" class="btn btn-primary">Home</a>
 		<br/><br/>
 		<?php
