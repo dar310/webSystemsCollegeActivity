@@ -25,7 +25,7 @@ if(isset($_POST['update']))
 // Getting id from url
 $id = $_GET['id'];
 
-// Fetech user data based on id
+// Fetch user data based on id
 $result = mysqli_query($conn, "SELECT * FROM users WHERE id=$id");
 
 while($user_data = mysqli_fetch_array($result))
@@ -40,23 +40,58 @@ while($user_data = mysqli_fetch_array($result))
 <html>
 	<head>	
 		<title>Edit User Data</title>
-		<link rel="stylesheet" href="styles/register.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <style>
-            textarea {
-                resize: none;
-            }
+             body {
+            font-family: 'Nunito', sans-serif;
+            color: white;
+            background-image: linear-gradient(270deg, #51713A 0%, #000E21 100%);
+        }
+
+        .container {
+            background-color: #202124;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            width: 50%;
+        }
+
+        .form-check-label {
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #7ED6DF;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #6CC5C4;
+        }
         </style>
 	</head>
 
 	<body>
-		<a href="admindashboard.php" class="btn btn-primary">Home</a>
-		<br/><br/>
-		
-		<form name="update_user" method="post" action="edit-user.php">
-            <div class="mb-3">
-                <table width="100%" border="0">
+        <div class="container">
+            <a href="admindashboard.php" class="btn btn-primary mb-3">Home</a>
+            <form name="update_user" method="post" action="edit-user.php">
+                <table>
                     <tr>
                         <td><label class="form-label">First Name</label></td>
                         <td><input type="text" class="form-control" name="first_name" value="<?php echo $first_name;?>" required></td>
@@ -99,11 +134,10 @@ while($user_data = mysqli_fetch_array($result))
                     </tr>
                     <tr>
                         <td><input type="hidden" name="id" value=<?php echo $_GET['id'];?>></td>
-                        <td><input type="submit" class="btn btn-primary"name="update" value="Update"></td>
+                        <td><input type="submit" class="btn btn-primary" name="update" value="Update"></td>
                     </tr>
                 </table>
-            </div>
-		</form>
+            </form>
+        </div>
 	</body>
 </html>
-
