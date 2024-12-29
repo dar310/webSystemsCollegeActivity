@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
   <link rel="stylesheet" href="./style.css">
   <style>
-    /* Inline CSS for the horizontal gender layout */
     .gender-container {
       display: flex;
       align-items: center;
@@ -26,13 +25,13 @@
 	</div>
 	<form id="form" class="form">
 		<div class="form-control">
-			<input type="text" placeholder="Enter name" id="name" />
+			<input type="text" placeholder="Enter first name" id="name" />
 			<i class="fas fa-check-circle"></i>
 			<i class="fas fa-times-circle"></i>
 			<small>Error message</small>
 		</div>
 		<div class="form-control">
-			<input type="email" placeholder="Enter email" id="email" />
+			<input type="email" placeholder="Enter last name" id="name" />
 			<i class="fas fa-check-circle"></i>
 			<i class="fas fa-times-circle"></i>
 			<small>Error message</small>
@@ -44,23 +43,15 @@
 			<small>Error message</small>
 		</div>
 		<div class="form-control">
-			<input type="date" placeholder="Enter birthday (dd/mm/yyyy)" id="birthday" />
-			<i class="fas fa-check-circle"></i>
-			<i class="fas fa-times-circle"></i>
-			<small>Error message</small>
-		</div>
-		<div class="form-control">
 			<input type="password" placeholder="Password" id="password" />
 			<i class="fas fa-check-circle"></i>
 			<i class="fas fa-times-circle"></i>
 			<small>Error message</small>
 		</div>
-		<div class="form-control">
-			<input type="password" placeholder="Confirm Password" id="confirm" />
-			<i class="fas fa-check-circle"></i>
-			<i class="fas fa-times-circle"></i>
-			<small>Error message</small>
-		</div>
+		  <div class="mb-3">
+                <label for="birthday" class="form-label">Birthday</label>
+                <input type="date" id="birthday" class="form-control" name="birthday" required>
+            </div>
 		<div class="form-control">
 			<label for="gender">Gender:</label>
 			<div class="gender-container">
