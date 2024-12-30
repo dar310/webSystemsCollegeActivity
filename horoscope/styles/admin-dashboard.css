@@ -1,0 +1,73 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #000000, #166D3B);
+    color: #ffffff;
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 0 auto;
+}
+
+/* Table fixes */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+/* Basic cell padding and alignment */
+.table th, .table td {
+    padding: 10px;
+    vertical-align: middle;
+}
+
+/* Original styling preserved */
+.table th {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #f9f9f9 !important;
+}
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #ddd !important;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    opacity: 0.9 !important;
+}
+
+footer {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+}
