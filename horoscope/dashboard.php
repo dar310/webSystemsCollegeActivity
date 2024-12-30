@@ -4,116 +4,18 @@ if (!isset($_SESSION['birth_month']) && !isset($_SESSION['birth_day'])) {
     header('Location: login.php');
     exit();
 }
-$birth_month=$_SESSION['birth_month'];
-$birth_day=$_SESSION['birth_day'];
+
+$birth_month = $_SESSION['birth_month'];
+$birth_day = $_SESSION['birth_day'];
 include_once("config.php");
 
-function convertMonthNo($monthNum){
-    switch($monthNum) {
-        case 1: return "January"; 
-        case 2: return "February"; 
-        case 3: return "March"; 
-        case 4: return "April"; 
-        case 5: return "May"; 
-        case 6: return "June"; 
-        case 7: return "July"; 
-        case 8: return "August"; 
-        case 9: return "September"; 
-        case 10: return "October"; 
-        case 11: return "November"; 
-        case 12: return "December"; 
-        default: return null;
-    }
-}
-//This function is for printing the modal part for each zodiac signs
-function printZodiacDetails($zodiacSign) {
-    global $conn;
-
-    $query = "SELECT * FROM zodiac WHERE sign_name = '$zodiacSign'";
-    $result = mysqli_query($conn, $query);
-    $zodiac_data = mysqli_fetch_array($result);
-    $sign_name = lcfirst($zodiac_data['sign_name']);
-    $min_month= convertMonthNo($zodiac_data['month_min']);
-    $max_month= convertMonthNo($zodiac_data['month_max']);
-    $min_day=$zodiac_data['day_min'];
-    $max_day=$zodiac_data['day_max'];
-
-    if ($zodiac_data) {
-        echo '
-        <div class="modal fade" id="' . htmlspecialchars($sign_name). '"-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">' . htmlspecialchars($zodiac_data['sign_name']) . '</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <h3 class="text-center">Start and End Month</h3>
-                        <h4 class="text-center">'. htmlspecialchars($min_month).' '.htmlspecialchars($min_day).' - '.htmlspecialchars($max_month).' '.htmlspecialchars($max_day).'<h4><br>
-                        <h3>About this Zodiac Sign</h3>
-                        <p>' . htmlspecialchars($zodiac_data['description']) . '</p>
-                        <h3>Today\'s Horoscope</h3>
-                        <p>' . htmlspecialchars($zodiac_data['daily_horoscope']) . '</p>
-                    </div>
-                </div>
-            </div>
-        </div>';
-    } else {
-        // If no data found for the zodiac sign
-        echo '<p>No details found for this zodiac sign.</p>';
-    }
-}
-function printZodiacCard($zodiacSign) {
-    // Example logic to fetch data for the zodiac sign. Replace with actual data from the database.
-    global $conn; // Access the global connection variable
-
-    // Query to fetch zodiac details for the given sign
-    $query = "SELECT * FROM zodiac WHERE sign_name = '$zodiacSign'";
-    $result = mysqli_query($conn, $query);
-    $zodiac_data = mysqli_fetch_array($result);
-    $sign_name = $zodiac_data['sign_name'];
-    $l_sign_name = lcfirst($zodiac_data['sign_name']);
-    $image_path = $zodiac_data['image_path'];
-
-    if ($zodiac_data) {
-        echo '
-        <div class="col-12 col-sm-6 col-md-3 col-lg-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title text-center">' . htmlspecialchars($sign_name) . '</h5>
-                </div>
-                <img src="' . htmlspecialchars($image_path) . '" class="card-img-bottom" alt="' . htmlspecialchars($sign_name) . ' Image" alt="zodiac-' . htmlspecialchars($sign_name) . '" data-bs-toggle="modal" data-bs-target="#' . htmlspecialchars($l_sign_name) . '">
-            </div>
-        </div>';
-    } else {
-        // If no data found for the zodiac sign
-        echo '<p>No details found for this zodiac sign.</p>';
-    }
-}
-$result = mysqli_query($conn, "SELECT * 
-FROM zodiac 
-WHERE (
-    -- Case 1: Range is within the same year
-    (month_min < month_max OR 
-     (month_min = month_max AND day_min <= day_max)) 
-    AND (
-        ($birth_month > month_min OR ($birth_month = month_min AND $birth_day >= day_min)) 
-        AND 
-        ($birth_month < month_max OR ($birth_month = month_max AND $birth_day <= day_max))
-    )
-) 
-OR (
-    -- Case 2: Range spans across years (e.g., December to January)
-    (month_min > month_max) 
-    AND (
-        ($birth_month > month_min OR ($birth_month = month_min AND $birth_day >= day_min)) 
-        OR 
-        ($birth_month < month_max OR ($birth_month = month_max AND $birth_day <= day_max))
-    )
-);
-");
-if ($user_data = mysqli_fetch_array($result)) {
-    $sign_name = $user_data['sign_name'];
+function convertMonthNo($monthNum) {
+    $months = [
+        1 => "January", 2 => "February", 3 => "March", 4 => "April",
+        5 => "May", 6 => "June", 7 => "July", 8 => "August",
+        9 => "September", 10 => "October", 11 => "November", 12 => "December"
+    ];
+    return $months[$monthNum] ?? null;
 }
 function timeAgo($timestamp) {
     // Convert the database timestamp to a Unix timestamp
@@ -154,47 +56,167 @@ function timeAgo($timestamp) {
             return "$years years ago";
     }
 }
-?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Dashboard</title>
-        <!-- change the placeholder.css -->
-        <link rel="stylesheet" href="styles/placeholder.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <div class="container my-5">
-            <h1 class="text-center mb-4">My Zodiac Sign is: <?= $sign_name ?></h1>
-            <div class="row g-4">
-                <?=printZodiacCard('Aries')?>
-                <?=printZodiacCard('Taurus')?>
-                <?=printZodiacCard('Gemini')?>
-                <?=printZodiacCard('Cancer')?>
-                <?=printZodiacCard('Leo')?>
-                <?=printZodiacCard('Virgo')?>
-                <?=printZodiacCard('Libra')?>
-                <?=printZodiacCard('Scorpius')?>
-                <?=printZodiacCard('Sagittarius')?>
-                <?=printZodiacCard('Capricornus')?>
-                <?=printZodiacCard('Aquarius')?>
-                <?=printZodiacCard('Pisces')?>
-            </div>
-        </div>
-        <?=printZodiacDetails("Aries")?>
-        <?=printZodiacDetails("Taurus")?>
-        <?=printZodiacDetails("Gemini")?>
-        <?=printZodiacDetails("Cancer")?>
-        <?=printZodiacDetails("Leo")?>
-        <?=printZodiacDetails("Virgo")?>
-        <?=printZodiacDetails("Libra")?>
-        <?=printZodiacDetails("Scorpius")?>
-        <?=printZodiacDetails("Sagittarius")?>
-        <?=printZodiacDetails("Capricornus")?>
-        <?=printZodiacDetails("Aquarius")?>
-        <?=printZodiacDetails("Pisces")?>
-        <a class="btn btn-primary" href="logout.php" role="button">Logout</a>
-    </body>
-</html>
+function printZodiacDetails($zodiacSign) {
+    global $conn;
 
+    $query = "SELECT * FROM zodiac WHERE sign_name = '$zodiacSign'";
+    $result = mysqli_query($conn, $query);
+
+    if ($zodiac_data = mysqli_fetch_array($result)) {
+        $sign_name = htmlspecialchars($zodiac_data['sign_name']);
+        $min_month = convertMonthNo($zodiac_data['month_min']);
+        $max_month = convertMonthNo($zodiac_data['month_max']);
+        $min_day = $zodiac_data['day_min'];
+        $max_day = $zodiac_data['day_max'];
+        $description = htmlspecialchars($zodiac_data['description']);
+        $daily_horoscope = htmlspecialchars($zodiac_data['daily_horoscope']);
+        $last_updated = htmlspecialchars($zodiac_data['last_updated']);
+        
+        // Modal HTML
+        echo '
+        <div class="modal fade" id="' . strtolower($sign_name) . '" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">' . $sign_name . '</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="text-center">Start and End Month</h3>
+                        <h4 class="text-center">' . $min_month . ' ' . $min_day . ' - ' . $max_month . ' ' . $max_day . '</h4><br>
+                        <h3>About this Zodiac Sign</h3>
+                        <p>' . $description . '</p>
+                        <h3>Today\'s Horoscope</h3>
+                        <p>' . $daily_horoscope . '</p>
+                    </div>
+                    <div class="modal-footer text-muted">
+                        <p>Last Updated '.timeAgo($last_updated).'</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>';
+    } else {
+        echo '<p>No details found for this zodiac sign.</p>';
+    }
+}
+
+function printZodiacCard($zodiacSign) {
+    global $conn;
+
+    $query = "SELECT * FROM zodiac WHERE sign_name = '$zodiacSign'";
+    $result = mysqli_query($conn, $query);
+    
+    if ($zodiac_data = mysqli_fetch_array($result)) {
+        $sign_name = htmlspecialchars($zodiac_data['sign_name']);
+        $image_path = htmlspecialchars($zodiac_data['image_path']);
+        $min_month = convertMonthNo($zodiac_data['month_min']);
+        $max_month = convertMonthNo($zodiac_data['month_max']);
+        $min_day = $zodiac_data['day_min'];
+        $max_day = $zodiac_data['day_max'];
+        $description = htmlspecialchars($zodiac_data['description']);
+        $daily_horoscope = htmlspecialchars($zodiac_data['daily_horoscope']);
+        $last_updated = htmlspecialchars($zodiac_data['last_updated']);
+        
+        echo '
+        <div class="row justify-content-center align-items-stretch g-4">
+            <!-- Image Card -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div class="text-center mb-4">
+                            <img src="' . $image_path . '" class="img-fluid rounded" alt="' . $sign_name . ' Image">
+                        </div>
+                        <div class="text-center">
+                            <h1 class="mb-0">Period:</h1>
+                            <h2>' . $min_month . ' ' . $min_day . ' - ' . $max_month . ' ' . $max_day . '</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Description and Horoscope Card -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Description Section -->
+                        <div class="mb-4">
+                            <h4 class="mb-3">About ' . $sign_name . '</h4>
+                            <p>' . $description . '</p>
+                        </div>
+                        
+                        <!-- Horoscope Section -->
+                        <div class="mb-4">
+                            <h4 class="mb-3">Today\'s Horoscope</h4>
+                            <p>' . $daily_horoscope . '</p>
+                        </div>
+                        
+                        <!-- Push footer to bottom -->
+                        <div class="mt-auto">
+                            <hr>
+                            <div class="text-muted small">
+                                Last Updated: ' . timeAgo($last_updated) . '
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>';
+    } else {
+        echo '<p>No details found for this zodiac sign.</p>';
+    }
+}
+
+$result = mysqli_query($conn, "SELECT * 
+FROM zodiac 
+WHERE (
+    (month_min < month_max OR (month_min = month_max AND day_min <= day_max)) 
+    AND (
+        ($birth_month > month_min OR ($birth_month = month_min AND $birth_day >= day_min)) 
+        AND 
+        ($birth_month < month_max OR ($birth_month = month_max AND $birth_day <= day_max))
+    )
+) 
+OR (
+    (month_min > month_max) 
+    AND (
+        ($birth_month > month_min OR ($birth_month = month_min AND $birth_day >= day_min)) 
+        OR 
+        ($birth_month < month_max OR ($birth_month = month_max AND $birth_day <= day_max))
+    )
+);
+");
+
+if ($user_data = mysqli_fetch_array($result)) {
+    $sign_name = $user_data['sign_name'];
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <script src = "scripts/dateScript.js"defer></script>
+</head>
+<body>
+    <div class="container my-5">
+        <a class="btn btn-primary" href="logout.php" id ="logout-btn"role="button">Logout</a>
+        <h1 class="text-center mb-4 zodiac-heading">My Zodiac Sign<br></h1>
+        <h2 class="text-center mb-4 zodiac-heading"><div class="date-container" id="current-date"></div></h2>
+        <div class="row g-4">
+            <?php
+            printZodiacCard($sign_name);
+            ?>
+        </div>
+    </div>
+
+    
+</body>
+</html>

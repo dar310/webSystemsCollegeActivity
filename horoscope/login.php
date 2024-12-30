@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($_POST['password'], $hashed_password)) {
             if ($row["is_admin"] == 1) {
                 $_SESSION['username'] = $username;
+                $_SESSION['userid'] = $row["id"];
                 header('Location: admindashboard.php');
             } else {
                 $_SESSION['username'] = $username;
@@ -59,8 +60,10 @@ mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="styles/login.css">
     <!-- Bootstrap -->
@@ -68,23 +71,29 @@ mysqli_close($conn);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Horoscope Checker</h1>
+    <!-- Horoscope Checker Section -->
+    <div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+        <h1 class="mb-4">Horoscope Checker</h1>
+        
         <!-- Login Form -->
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="w-100" style="max-width: 400px;">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username">
+                <input type="text" class="form-control" id="username" name="username" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password">
+                <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
-        <!-- Separate Register Account Container for Styling -->
-        <div class="register-container">
+
+        <!-- Separate Register Account Section -->
+        <div class="mt-3 text-center">
             <label>Don't have an Account?</label>
-            <a class="btn btn-primary" href="register.php" role="button">Register</a>
+            <a class="btn btn-outline-primary" href="register.php" role="button">Register</a>
         </div>
+    </div>
+
 </body>
 </html>

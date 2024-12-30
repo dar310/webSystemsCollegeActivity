@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['userid'])) {
+    header('Location: login.php');
+    exit();
+}
 // Create database connection using config file
 include_once("config.php");
 
@@ -30,6 +35,7 @@ function convertNumtoMonth($month){
 // Fetch all users data from database
 $result = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac ASC");
+$logged_in_user_id = $_SESSION['userid'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,25 +44,25 @@ $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac AS
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrator Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles/admindash.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="styles/admin-dashboard.css">
 </head>
-<body class="bg-beige">
-    <div class="container py-5 bg-white">
+<body class="bg-light">
+    <div class="container py-5 bg-white shadow-sm rounded">
         <header class="text-center mb-4">
-            <h1 class="text-emerald">Administrator Dashboard</h1>
+            <h1 class="text-primary">Administrator Dashboard</h1>
         </header>
 
         <div class="row">
             <!-- Users Table -->
             <div class="col-md-6 mb-4">
-                <div class="card shadow-sm bg-white">
-                    <div class="card-header text-black">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
                         <h2 class="h5">Users</h2>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Username</th>
@@ -75,8 +81,15 @@ $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac AS
                                             echo "<td>".$user_data['last_name']."</td>";
                                             echo "<td>".$user_data['first_name']."</td>";
                                             echo "<td>".convertNumtoMonth($user_data['month'])." ".$user_data['day'].", ".$user_data['year']."</td>";    
-                                            echo "<td>".ucfirst($user_data['gender'])."</td>";    
-                                            echo "<td><a href='edit-user.php?id=$user_data[id]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-user.php?id=$user_data[id]' class='btn btn-danger btn-sm'>Delete</a></td>";
+                                            echo "<td>".ucfirst($user_data['gender'])."</td>";
+                                            if ($user_data['id'] == $logged_in_user_id) {
+                                                // Disable the Edit and Delete buttons for the logged-in user
+                                                echo "<td><span class='btn btn-warning btn-sm disabled'>Edit</span> <span class='btn btn-danger btn-sm disabled'>Delete</span></td>";
+                                            } else {
+                                                // Show the Edit and Delete buttons normally
+                                                echo "<td><a href='edit-user.php?id=$user_data[id]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-user.php?id=$user_data[id]' class='btn btn-danger btn-sm' onclick=\"return confirm('Are you sure you want to delete this user?');\">Delete</a></td>";
+                                            }
+                                            // echo "<td><a href='edit-user.php?id=$user_data[id]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-user.php?id=$user_data[id]' class='btn btn-danger btn-sm'>Delete</a></td>";
                                             echo "</tr>";
                                         }
                                     ?>
@@ -90,13 +103,13 @@ $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac AS
 
             <!-- Zodiac Signs Table -->
             <div class="col-md-6 mb-4">
-                <div class="card shadow-sm bg-white">
-                    <div class="card-header text-black">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
                         <h2 class="h5">Zodiac Signs</h2>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped" id="zodiac-table">
+                            <table class="table table-striped table-bordered" id="zodiac-table">
                                 <thead>
                                     <tr>
                                         <th>Zodiac Sign</th>
@@ -113,10 +126,10 @@ $zodiac_result = mysqli_query($conn, "SELECT * FROM zodiac ORDER BY id_zodiac AS
                                             echo "<tr>";
                                             echo "<td>".$zodiac_data['sign_name']."</td>";
                                             echo "<td>".shortenText($zodiac_data['description'])."</td>";
-                                            echo "<td>".$zodiac_data['daily_horoscope']."</td>";
+                                            echo "<td>".shortenText($zodiac_data['daily_horoscope'])."</td>";
                                             echo "<td>".convertNumtoMonth($zodiac_data['month_min'])." ".$zodiac_data['day_min']." - ".convertNumtoMonth($zodiac_data['month_max'])." ".$zodiac_data['day_max']."</td>";    
                                             echo "<td>".$zodiac_data['image_path']."</td>";    
-                                            echo "<td><a href='edit-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-danger btn-sm'>Delete</a></td>";
+                                            echo "<td><a href='edit-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-zodiac.php?id=$zodiac_data[id_zodiac]' class='btn btn-danger btn-sm' onclick=\"return confirm('Are you sure you want to delete this zodiac sign?');\">Delete</a></td>";
                                             echo "</tr>";
                                         }
                                     ?>

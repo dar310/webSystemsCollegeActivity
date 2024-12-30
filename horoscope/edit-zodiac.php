@@ -7,8 +7,8 @@
         $id = $_POST['id'];
         
         $sign_name = $_POST['sign_name'];
-        $description = $_POST['description'];
-        $daily_horoscope = $_POST['daily_horoscope'];
+        $description = mysqli_real_escape_string($conn, $_POST['description']);
+        $daily_horoscope = mysqli_real_escape_string($conn, $_POST['daily_horoscope']);
         $min_month = $_POST['min_month'];
         $min_day = $_POST['min_day'];
         $max_month = $_POST['max_month'];
@@ -46,9 +46,9 @@ while($user_data = mysqli_fetch_array($result))
 <html>
 	<head>	
 		<title>Edit Zodiac Signs</title>
-		<link rel="stylesheet" href="styles/register.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="styles/add-edit-user.css">
         <style>
             textarea {
                 resize: none;
@@ -57,8 +57,6 @@ while($user_data = mysqli_fetch_array($result))
 	</head>
 
 	<body>
-		<a href="admindashboard.php" class="btn btn-primary">Home</a>
-		<br/><br/>
 		<?php
             $months = [
                 1 => "January",
@@ -86,7 +84,7 @@ while($user_data = mysqli_fetch_array($result))
                 return $options;
             }
         ?>
-
+        <div class="container">
 		<form name="update_zodiac" method="post" action="edit-zodiac.php">
             <div class="mb-3">
                 <table width="100%" border="0">
@@ -132,6 +130,8 @@ while($user_data = mysqli_fetch_array($result))
                 </table>
             </div>
 		</form>
+        <a href="admindashboard.php"><button class="btn btn-secondary">Go Back</button></a>
+        </div>
 	</body>
 </html>
 

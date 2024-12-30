@@ -16,6 +16,7 @@ if (isset($_POST["submit"])) {
     if (mysqli_query($conn, $sql)) {
         echo '<script>alert("Registration Successful")</script>';
         header('Refresh: 1; URL = login.php');
+		exit();
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
@@ -26,55 +27,104 @@ mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
-    <link rel="stylesheet" href="styles/login.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+  <link rel="stylesheet" href="styles/register.css">
+  <style>
+    /* Inline CSS for the horizontal gender layout */
+    .gender-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gender-container label {
+      margin: 0;
+    }
+  </style>
+  <script>
+  window.onload = function () {
+    document.getElementById("form").reset();
+  };
+</script>
 </head>
 <body>
-    <h1>Register</h1>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
-            <div class="mb-3">
-                <label for="firstname" class="form-label">First Name</label>
-                <input type="text" id="firstname" class="form-control" name="firstname" required >
-            </div>
-            <div class="mb-3">
-                <label for="lastname" class="form-label">Last Name</label>
-                <input type="text" id="lastname" class="form-control" name="lastname" required>
-            </div>
+<div class="wrapper">
+	<div class="header">
+		<h2>Registration Form</h2>
+	</div>
+	<form id="form" class="form" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+		<div class="form-control">
+			<input type="text" placeholder="Enter First Name" id="firstname" name="firstname" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="text" placeholder="Enter Last Name" id="lastname" name="lastname" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="text" placeholder="Enter username" id="username" name="username" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="date" placeholder="Enter birthday (dd/mm/yyyy)" id="birthday" name="birthday" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="password" placeholder="Password" id="password" name="password" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="password" placeholder="Confirm Password" id="confirm" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<label for="gender">Gender:</label>
+			<div class="gender-container">
+				<input type="radio" name="gender" id="male" value="male" required>
+				<label for="male">Male</label>
+				<input type="radio" name="gender" id="female" value="female" >
+				<label for="female">Female</label>
+				<input type="radio" name="gender" id="other" value="other" >
+				<label for="other">Other</label>
+			</div>
+			<small>Error message</small>
+		</div>
+		<button type="submit" name="submit" id="submit">Register Now</button>
+	</form>
+</div>
+<script>
+    // JavaScript for validating password match
+    const form = document.getElementById('form');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm');
+    const submitButton = document.getElementById('submit');
 
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" id="username" class="form-control" name="username" required pattern="^[a-zA-Z0-9-_]*$">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password"class="form-control" name="password" required>
-            </div>
-            <div class="mb-3">
-                <label for="birthday" class="form-label">Birthday</label>
-                <input type="date" id="birthday" class="form-control" name="birthday" required>
-            </div>
-            <!-- Gender Radio Button -->
-            <label class="form-check-label-gender" for="mb-3-gender">Gender:</label>
-            <div class="mb-3-gender">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male-gender" value="male" required>
-                    <label class="form-check-label" for="male-gender">Male</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female-gender" value="female">
-                    <label class="form-check-label" for="female-gender">Female</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="other-gender" value="other">
-                    <label class="form-check-label" for="other-gender">Other</label>
-                </div>
-            </div>
-
-            <button type="submit" name="submit" class="btn btn-primary" value="submit">Register Now</button>
-        </form>
+    // Add event listener for form submission
+    form.addEventListener('submit', function (e) {
+        // Check if passwords match
+        if (password.value !== confirmPassword.value) {
+            e.preventDefault(); // Prevent form submission
+            alert("Passwords do not match!");
+        }
+    });
+</script>
 </body>
 </html>
+

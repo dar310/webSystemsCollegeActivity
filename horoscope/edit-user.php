@@ -40,9 +40,9 @@ while($user_data = mysqli_fetch_array($result))
 <html>
 	<head>	
 		<title>Edit User Data</title>
-		<link rel="stylesheet" href="styles/register.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="styles/add-edit-user.css">
         <style>
             textarea {
                 resize: none;
@@ -51,10 +51,10 @@ while($user_data = mysqli_fetch_array($result))
 	</head>
 
 	<body>
-		<a href="admindashboard.php" class="btn btn-primary">Home</a>
+        <div class = "container">
 		<br/><br/>
 		
-		<form name="update_user" method="post" action="edit-user.php">
+		<form name="update_user" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
             <div class="mb-3">
                 <table width="100%" border="0">
                     <tr>
@@ -104,6 +104,8 @@ while($user_data = mysqli_fetch_array($result))
                 </table>
             </div>
 		</form>
+        <a href="admindashboard.php"><button class="btn btn-secondary">Go Back</button></a>
+        </div>
 	</body>
 </html>
 
