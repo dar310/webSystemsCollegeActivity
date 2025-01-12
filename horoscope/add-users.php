@@ -9,6 +9,8 @@
         $last_name = $_POST["lastname"];
         $birthday = $_POST["birthday"];
         $gender = $_POST["gender"];
+        $address = $_POST['address'];
+        $address_code = $_POST['address_code'];
         $is_admin = isset($_POST["admin"]) && $_POST["admin"] == '1' ? 1 : 0;
 
         if (empty($username) || empty($password) || empty($first_name) || empty($last_name) || empty($birthday) || empty($gender)) {
@@ -19,8 +21,8 @@
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         // Insert user data into table
-        $stmt = $conn->prepare("INSERT INTO users (username, first_name, last_name, password, birthday, gender, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssi", $username, $first_name, $last_name, $password, $birthday, $gender, $is_admin);
+        $stmt = $conn->prepare("INSERT INTO users (username, first_name, last_name, password, birthday, gender, address, address_code, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssssi", $username, $first_name, $last_name, $password, $birthday, $gender, $address, $address_code, $is_admin);
 
         if ($stmt->execute()) {
             echo '<script>alert("User Successfully added")</script>';
@@ -90,7 +92,16 @@
                     </div>
                 </div>
             </div>
-
+            <div class="mb-3">
+                <tr> 
+                    <td><label class="form-label">Home Address</label></td>
+                    <td><input type="text" class="form-control" name="address" required></td>
+                </tr>
+                <tr> 
+                    <td><label class="form-label">Google Maps Address Code (only applicable if not pointed exactly)</label></td>
+                    <td><input type="text" class="form-control" name="address_code" placeholder="ex. H288+H2 (points to Mapua Makati)"></td>
+                </tr>
+            </div>
             <div class="mb-3">
                 <label class="form-label">Is Administrator?</label>
                 <div>

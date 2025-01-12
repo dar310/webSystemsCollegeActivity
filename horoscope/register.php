@@ -10,16 +10,21 @@ if (isset($_POST["submit"])) {
     $username = $_POST["username"];
     $birthday = $_POST["birthday"];
     $gender = $_POST["gender"];
+	$address = $_POST['address'];
+	$address_code = $_POST['address_code'];
+	$is_admin = 0;
     $password = password_hash($_POST["password"],PASSWORD_DEFAULT);
     // Insert the user into the database
-    $sql = "INSERT INTO users (username, first_name, last_name, password, birthday,gender, is_admin) VALUES ('$username','$firstname','$lastname','$password','$birthday','$gender','0')";
-    if (mysqli_query($conn, $sql)) {
+    $stmt = $conn->prepare("INSERT INTO users (username, first_name, last_name, password, birthday, gender, address, address_code, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param("ssssssssi", $username, $firstname, $lastname, $password, $birthday, $gender, $address, $address_code, $is_admin);
+    if ($stmt->execute()) {
         echo '<script>alert("Registration Successful")</script>';
         header('Refresh: 1; URL = login.php');
 		exit();
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
+	$stmt->close();
 }
 
 // Close the database connection
@@ -78,6 +83,18 @@ mysqli_close($conn);
 		</div>
 		<div class="form-control">
 			<input type="date" placeholder="Enter birthday (dd/mm/yyyy)" id="birthday" name="birthday" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="text" placeholder="Enter Home Address" id="address" name="address" required>
+			<i class="fas fa-check-circle"></i>
+			<i class="fas fa-times-circle"></i>
+			<small>Error message</small>
+		</div>
+		<div class="form-control">
+			<input type="text" placeholder="GMaps Address Code ex. H288+H2" id="address_code" name="address_code">
 			<i class="fas fa-check-circle"></i>
 			<i class="fas fa-times-circle"></i>
 			<small>Error message</small>

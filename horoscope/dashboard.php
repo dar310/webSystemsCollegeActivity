@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['birth_month']) && !isset($_SESSION['birth_day'])) {
+if (!isset($_SESSION['birth_month']) && !isset($_SESSION['birth_day']) && !isset($_SESSION['address'])) {
     header('Location: login.php');
     exit();
 }
@@ -56,57 +56,50 @@ function timeAgo($timestamp) {
             return "$years years ago";
     }
 }
-function printZodiacDetails($zodiacSign) {
-    global $conn;
-
-    $query = "SELECT * FROM zodiac WHERE sign_name = '$zodiacSign'";
-    $result = mysqli_query($conn, $query);
-
-    if ($zodiac_data = mysqli_fetch_array($result)) {
-        $sign_name = htmlspecialchars($zodiac_data['sign_name']);
-        $min_month = convertMonthNo($zodiac_data['month_min']);
-        $max_month = convertMonthNo($zodiac_data['month_max']);
-        $min_day = $zodiac_data['day_min'];
-        $max_day = $zodiac_data['day_max'];
-        $description = htmlspecialchars($zodiac_data['description']);
-        $daily_horoscope = htmlspecialchars($zodiac_data['daily_horoscope']);
-        $last_updated = htmlspecialchars($zodiac_data['last_updated']);
-        
-        // Modal HTML
-        echo '
-        <div class="modal fade" id="' . strtolower($sign_name) . '" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">' . $sign_name . '</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <h3 class="text-center">Start and End Month</h3>
-                        <h4 class="text-center">' . $min_month . ' ' . $min_day . ' - ' . $max_month . ' ' . $max_day . '</h4><br>
-                        <h3>About this Zodiac Sign</h3>
-                        <p>' . $description . '</p>
-                        <h3>Today\'s Horoscope</h3>
-                        <p>' . $daily_horoscope . '</p>
-                    </div>
-                    <div class="modal-footer text-muted">
-                        <p>Last Updated '.timeAgo($last_updated).'</p>
-                    </div>
-
-                </div>
-            </div>
-        </div>';
-    } else {
-        echo '<p>No details found for this zodiac sign.</p>';
-    }
+function createCalendarEmbed($birth_year, $birth_month, $birth_day) {
+    // Format the date components with leading zeros
+    $tmp_birth_month = str_pad($birth_month, 2, '0', STR_PAD_LEFT);
+    $tmp_birth_day = str_pad($birth_day, 2, '0', STR_PAD_LEFT);
+    
+    $formatted_date = $birth_year . $tmp_birth_month . $tmp_birth_day;
+    
+    $base_url = "https://calendar.google.com/calendar/embed";
+    $params = [
+        'src' => 'lizziebuizon@gmail.com',
+        'ctz' => 'Asia/Manila',
+        'wkst' => '1',
+        'bgcolor' => '%23ffffff',
+        'color' => '%239E69AF',
+        'showNav' => '1',
+        'showTitle' => '0',
+        'showPrint' => '0',
+        'showTabs' => '0',
+        'showTz' => '0',
+        'showCalendars' => '0',
+        'hl'=>'en',
+        'mode' => 'Agenda',
+        'showDate' => $formatted_date,
+        'dates' => $formatted_date . '/' . $formatted_date
+    ];
+    
+    $final_url = $base_url . '?' . http_build_query($params);
+    
+    return $final_url;
 }
-
 function printZodiacCard($zodiacSign) {
     global $conn;
 
     $query = "SELECT * FROM zodiac WHERE sign_name = '$zodiacSign'";
     $result = mysqli_query($conn, $query);
-    
+    $address = $_SESSION['address'];
+    global $birth_month;
+    global $birth_day;
+    $tmp_birth_month = str_pad($birth_month, 2, '0', STR_PAD_LEFT);
+    $tmp_birth_day = str_pad($birth_day, 2, '0', STR_PAD_LEFT);
+    $birth_year = $_SESSION['birth_year'];
+    $encodedAddress = urlencode($address);
+    $apiKey= "AIzaSyBh7rC-rVEpyQbgPpHN3Ils9rY_JTBTIBo";
+    $formatted_date = $birth_year . $tmp_birth_month . $tmp_birth_day;
     if ($zodiac_data = mysqli_fetch_array($result)) {
         $sign_name = htmlspecialchars($zodiac_data['sign_name']);
         $image_path = htmlspecialchars($zodiac_data['image_path']);
@@ -117,7 +110,12 @@ function printZodiacCard($zodiacSign) {
         $description = htmlspecialchars($zodiac_data['description']);
         $daily_horoscope = htmlspecialchars($zodiac_data['daily_horoscope']);
         $last_updated = htmlspecialchars($zodiac_data['last_updated']);
-        
+        if(isset($_SESSION['home_address'])){
+            $home_address = $_SESSION['home_address'];
+        }
+        else{
+            $home_address = $address;
+        }
         echo '
         <div class="row justify-content-center align-items-stretch g-4">
             <!-- Image Card -->
@@ -129,17 +127,8 @@ function printZodiacCard($zodiacSign) {
                         </div>
                         <div class="text-center">
                             <h1 class="mb-0">Period:</h1>
-                            <h2>' . $min_month . ' ' . $min_day . ' - ' . $max_month . ' ' . $max_day . '</h2>
+                            <h2>' . $min_month . ' ' . $min_day . ' - ' . $max_month . ' ' . $max_day . '</h2><br><br>
                         </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Description and Horoscope Card -->
-            <div class="col-md-6">
-                <div class="card h-100 shadow">
-                    <div class="card-body d-flex flex-column">
-                        <!-- Description Section -->
                         <div class="mb-4">
                             <h4 class="mb-3">About ' . $sign_name . '</h4>
                             <p>' . $description . '</p>
@@ -158,6 +147,29 @@ function printZodiacCard($zodiacSign) {
                                 Last Updated: ' . timeAgo($last_updated) . '
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Description and Horoscope Card -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Description Section -->
+                        <iframe src="https://www.google.com/maps/embed/v1/place?key='.$apiKey.'&q='.$encodedAddress.'" style="border:0; width: 100%; height: 40%;"
+                            frameborder="0" style="border:0" allowfullscreen></iframe>
+                        <div class=mb-3>
+                            <h4><br>Home Address:</h4>
+                            <p>'.$home_address.'</p>
+                        </div>
+                        <h2><br>Calendar</h2>
+                        <iframe
+                            src="' . $final_url = createCalendarEmbed($birth_year, $birth_month, $birth_day) . '"
+                            frameborder="0" 
+                            scrolling="no"
+                            style="border:0; width: 100%; height: 40%;">
+                        </iframe>
+                        <a class = "btn btn-primary"target="_blank" href="https://calendar.google.com/calendar/event?action=TEMPLATE&dates='.$formatted_date.'T120000Z/'.$formatted_date.'T130000Z">Create Event</a>
                     </div>
                 </div>
             </div>
@@ -212,11 +224,9 @@ if ($user_data = mysqli_fetch_array($result)) {
         <h2 class="text-center mb-4 zodiac-heading"><div class="date-container" id="current-date"></div></h2>
         <div class="row g-4">
             <?php
-            printZodiacCard($sign_name);
+                printZodiacCard($sign_name);
             ?>
         </div>
     </div>
-
-    
 </body>
 </html>

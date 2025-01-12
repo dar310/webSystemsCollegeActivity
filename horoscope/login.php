@@ -43,6 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['username'] = $username;
                 $_SESSION['birth_month'] = $row["month"];
                 $_SESSION['birth_day'] = $row["day"];
+                $_SESSION['birth_year'] = $row["year"];
+                if($row["address_code"]=="" || $row["address_code"]==null){
+                    $_SESSION['address']= $row["address"];
+                }
+                else{
+                    $_SESSION['address']= $row["address_code"];
+                    $_SESSION['home_address'] = $row["address"];
+                }
                 header('Location: dashboard.php');
             }
         } else {

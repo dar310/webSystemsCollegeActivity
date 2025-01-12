@@ -11,10 +11,12 @@ if(isset($_POST['update']))
 	$last_name=$_POST['last_name'];
 	$birthday=$_POST['birthday'];
 	$gender=$_POST['gender'];
+    $address = $_POST['address'];
+    $address_code = $_POST['address_code'];
 	$is_admin=$_POST['isAdmin'];
 		
 	// update user data
-	$result = mysqli_query($conn, "UPDATE users SET first_name='$first_name',last_name='$last_name', birthday='$birthday',gender='$gender',is_admin='$is_admin' WHERE id=$id");
+	$result = mysqli_query($conn, "UPDATE users SET first_name='$first_name',last_name='$last_name', birthday='$birthday',gender='$gender',address='$address',address_code='$address_code',is_admin='$is_admin' WHERE id=$id");
 	
 	// Redirect to homepage to display updated user in list
 	header("Location: admindashboard.php");
@@ -34,6 +36,8 @@ while($user_data = mysqli_fetch_array($result))
 	$last_name = $user_data['last_name'];
 	$birthday = $user_data['birthday'];
 	$gender = $user_data['gender'];
+	$address = $user_data['address'];
+	$address_code = $user_data['address_code'];
 	$is_admin = $user_data['is_admin'];
 }
 ?>
@@ -85,6 +89,14 @@ while($user_data = mysqli_fetch_array($result))
                                 <?php if($gender == 'other') echo 'checked'; ?>> Other
                             </label>
                         </td>
+                    </tr>
+                    <tr> 
+                        <td><label class="form-label">Address</label></td>
+                        <td><input type="text" class="form-control" name="address" value="<?php echo $address;?>" required></td>
+                    </tr>
+                    <tr> 
+                        <td><label class="form-label">Google Maps Address Code<br>(required if not pointed exactly)</label></td>
+                        <td><input type="text" class="form-control" name="address_code" value="<?php echo $address_code;?>" placeholder="ex. H288+H2 (points to Mapua Makati)"></td>
                     </tr>
                     <tr> 
                         <td><label class="form-label">Is Administrator?</label></td>

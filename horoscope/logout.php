@@ -12,6 +12,15 @@
       unset($_SESSION['birth_day']);
       $sessionDayUnset = true;
    }
+   if (isset($_SESSION['birth_year'])){
+      unset($_SESSION['birth_year']);
+   }
+   if (isset($_SESSION['address'])){
+      unset($_SESSION['address']);
+   }
+   if (isset($_SESSION['home_address'])){
+      unset($_SESSION['home_address']);
+   }
    if ($sessionDayUnset && $sessionMonthUnset){
       echo "Clearing Session<br>";
    }

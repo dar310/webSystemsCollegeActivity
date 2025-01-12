@@ -70,6 +70,7 @@ $logged_in_user_id = $_SESSION['userid'];
                                         <th>Firstname</th>
                                         <th>Birthday</th>
                                         <th>Gender</th>
+                                        <th>Home Address</th>
                                         <th>Operations</th>
                                     </tr>
                                 </thead>
@@ -82,6 +83,7 @@ $logged_in_user_id = $_SESSION['userid'];
                                             echo "<td>".$user_data['first_name']."</td>";
                                             echo "<td>".convertNumtoMonth($user_data['month'])." ".$user_data['day'].", ".$user_data['year']."</td>";    
                                             echo "<td>".ucfirst($user_data['gender'])."</td>";
+                                            echo "<td>".$user_data['address']."</td>";
                                             if ($user_data['id'] == $logged_in_user_id) {
                                                 // Disable the Edit and Delete buttons for the logged-in user
                                                 echo "<td><span class='btn btn-warning btn-sm disabled'>Edit</span> <span class='btn btn-danger btn-sm disabled'>Delete</span></td>";
@@ -89,7 +91,6 @@ $logged_in_user_id = $_SESSION['userid'];
                                                 // Show the Edit and Delete buttons normally
                                                 echo "<td><a href='edit-user.php?id=$user_data[id]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-user.php?id=$user_data[id]' class='btn btn-danger btn-sm' onclick=\"return confirm('Are you sure you want to delete this user?');\">Delete</a></td>";
                                             }
-                                            // echo "<td><a href='edit-user.php?id=$user_data[id]' class='btn btn-warning btn-sm'>Edit</a> <a href='delete-user.php?id=$user_data[id]' class='btn btn-danger btn-sm'>Delete</a></td>";
                                             echo "</tr>";
                                         }
                                     ?>
