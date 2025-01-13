@@ -86,6 +86,33 @@ function createCalendarEmbed($birth_year, $birth_month, $birth_day) {
     
     return $final_url;
 }
+function xor_encrypt_decrypt($file, $key) {
+    if (preg_match('/[^0-9a-fA-F]/', $key)) {
+        echo "Error: The key must be a valid hexadecimal string.";
+        return false;
+    }
+
+    $key = hex2bin($key);
+    if ($key === false) {
+        echo "Error: Invalid hexadecimal key.";
+        return false;
+    }
+
+    $encryptedApiKey = file_get_contents($file);
+
+    if ($encryptedApiKey === false) {
+        echo "Error cannot find api key.";
+        return false;
+    }
+    $output = '';
+    $key_length = strlen($key);
+    for ($i = 0; $i < strlen($encryptedApiKey); $i++) {
+        $char = $encryptedApiKey[$i];
+        $output .= chr(ord($char) ^ ord($key[$i % $key_length]));
+    }
+    
+    return $output;
+}
 function printZodiacCard($zodiacSign) {
     global $conn;
 
@@ -94,11 +121,12 @@ function printZodiacCard($zodiacSign) {
     $address = $_SESSION['address'];
     global $birth_month;
     global $birth_day;
+    global $encryptedApiKey;
     $tmp_birth_month = str_pad($birth_month, 2, '0', STR_PAD_LEFT);
     $tmp_birth_day = str_pad($birth_day, 2, '0', STR_PAD_LEFT);
     $birth_year = $_SESSION['birth_year'];
     $encodedAddress = urlencode($address);
-    $apiKey= "AIzaSyBh7rC-rVEpyQbgPpHN3Ils9rY_JTBTIBo";
+    $apiKey = xor_encrypt_decrypt($_SERVER['DOCUMENT_ROOT'] .'/horoscope/encryptedApiKey.txt',11);
     $formatted_date = $birth_year . $tmp_birth_month . $tmp_birth_day;
     if ($zodiac_data = mysqli_fetch_array($result)) {
         $sign_name = htmlspecialchars($zodiac_data['sign_name']);
