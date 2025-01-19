@@ -1,61 +1,41 @@
 <?php
-// Enable SOAP server
-ini_set("soap.wsdl_cache_enabled", "0"); // Disable WSDL cache for development
-$server = new SoapServer(__DIR__ . "\user_registration.wsdl");
-// Register the class that handles registration
-$server‐>setClass("UserRegistration");
-$server‐>handle();
-class UserRegistration {
-    // Database connection parameters
-    private $host = 'localhost';
-    private $dbname = 'user_registration';
-    private $username = 'root'; // Replace with your database username
-    private $password = ''; // Replace with your database password
-    // Connect to the database
-    private function connect() {
-        try {
-            $conn = new PDO("mysql:host=$this‐>host;dbname=$this‐>dbname",
-            $this‐>username, $this‐>password);
-            $conn‐>setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $conn;
-        } catch (PDOException $e) {
-            echo "Connection failed: " . $e‐>getMessage();
-            return null;
-        }
-    }
-    // Method to register a new user
-    public function registerUser($xml) {
-        // Parse XML data
-        $userData = simplexml_load_string($xml);
-        $username = (string)$userData‐>username;
-        $password = (string)$userData‐>password;
-        $email = (string)$userData‐>email;
-        // Insert user into the database
-        $conn = $this‐>connect();
-        if ($conn) {
-            // Hash the password for security
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-            // Prepare and execute SQL query
-            $stmt = $conn‐>prepare("INSERT INTO users (username, password, email)
-            VALUES (:username, :password, :email)");
-            $stmt‐>bindParam(':username', $username);
-            $stmt‐>bindParam(':password', $hashedPassword);
-            $stmt‐>bindParam(':email', $email);
-            if ($stmt‐>execute()) {
-                    return "Registration successful!";
-                } else {
-                    return "Error: Could not register user.";
-                }
-        }
-        return "Database connection error.";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $email = $_POST["email"];
+    
+    // Create XML data
+    $xml = new SimpleXMLElement("<user></user>");
+    $xml->addChild("username", $username);
+    $xml->addChild("password", $password);
+    $xml->addChild("email", $email);
+    
+    // Create SOAP client and send the request
+    try {
+        // Initialize the SOAP client using the WSDL
+        $client = new SoapClient("user_registration.wsdl", array('trace' => 1));
+
+        // Send XML as a string, directly to the registerUser function
+        $response = $client->registerUser($xml->asXML());
+
+        // Display the response from the server
+        echo "<h2>$response</h2>";
+
+    } catch (SoapFault $e) {
+        // Handle any errors that occur during the request
+        echo "<h2>Error: " . $e->getMessage() . "</h2>";
+
+        // Print the raw SOAP request and response for debugging
+        echo "<pre>" . $client->__getLastRequest() . "</pre>";
+        echo "<pre>" . $client->__getLastResponse() . "</pre>";
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF‐8">
-<meta name="viewport" content="width=device‐width, initial‐scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registration Form</title>
 </head>
 <body>
